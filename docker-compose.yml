@@ -3,7 +3,9 @@ version: "3"
 services:
 
   interface:
-    container_name: beacon
+    container_name: Pibeacon
     build:
       context: .
       dockerfile: Dockerfile
+    volumes:
+      - ./app:/app
