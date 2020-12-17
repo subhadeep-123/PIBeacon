@@ -8,8 +8,9 @@ function build_image_dockercompose() {
         echo "--------------------------"
         echo "      Build Complete      "
         echo "--------------------------"
-        read -p "Enter the container Name - " ct-name
-        docker exec -it $ct-name bash
+        echo "Enter the container Name - " 
+        read ctname
+        docker exec -it $ctname bash
     else
         read -p "Enter the Path to the docker-compose.yml - " path
         cd $path
@@ -61,7 +62,7 @@ function delete_images() {
         sleep 2
         docker images -a && docker system prune -a
         echo "All Images Deleted"
-        docker images
+        sleep 2
     else
         echo "Enter the Image name with tag [img:tag] - "
         read img
@@ -80,9 +81,9 @@ function delete_containers() {
     if [[ $ch == 'y' ]]; then
         echo "Deleting All Containers"
         sleep 2
-        docker containers ls --all && docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)
+        docker container ls --all && docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)
         echo "All containers Deleted"
-        docker ps -a
+        sleep 2
     else
         echo "Enter the Container Name - "
         read cname
@@ -156,11 +157,11 @@ if [ "$1" == "--build-compose" ]; then
     build_image_dockercompose
 fi
 
-if [ "$1" == "delcon" ]; then
+if [ "$1" == "--delcon" ]; then
     delete_containers
 fi
 
-if [ "$1" == 'delimg']; then
+if [ "$1" == "--delimg" ]; then
     delete_images
 fi
 
@@ -170,3 +171,5 @@ if [ "$#" -eq $NO_ARGS ]; then
     echo "Error: Invalid no of Arguments. Try '--help' for more info!!" >&2
     help
 fi
+
+

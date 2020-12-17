@@ -1,4 +1,4 @@
-FROM ubuntu:21.04
+FROM ubuntu:latest
 RUN apt-get update
 WORKDIR /app
 COPY app/ ./
