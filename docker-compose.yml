@@ -2,10 +2,14 @@ version: "3"
 
 services:
 
-  interface:
-    container_name: Pibeacon
+  ble:
+    container_name: pibeacon
+    privileged: true
     build:
       context: .
       dockerfile: Dockerfile
     volumes:
       - ./app:/app
+    ports:
+      - "5551:5551"
+    network_mode: host
