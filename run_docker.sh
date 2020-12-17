@@ -10,16 +10,7 @@ function build_image_dockercompose() {
         echo "--------------------------"
         read -p "Do you run the container[y/n] - " ch
         if [[ $ch == "y" ]]; then
-            echo -e "---------------------------------\n\n\n\n"
-            docker images
-            echo -e "\n\n"
-            ctname="Default_Container"
-            echo "Enter the container Name That you wanna Give, else we have a default name - " 
-            read ctname
-            echo "Enter The Image Name - "
-            read imgname
-            # docker exec -it $ctname bash
-            docker run --name $ctname -it $imgname bash
+            run_container_docker_compose
         else
             echo "\n\nExiting from the script..\n\n"
             exit 1
@@ -29,6 +20,19 @@ function build_image_dockercompose() {
         cd $path
         docker-compose up -d --build
     fi
+}
+
+function run_container_docker_compose() {
+    echo -e "\n\n\n\n"
+    docker images
+    echo -e "\n\n"
+    ctname="Default_Container"
+    echo "Enter the container Name That you wanna Give, else we have a default name - "
+    read ctname
+    echo "Enter The Image Name - "
+    read imgname
+    # docker exec -it $ctname bash
+    docker run --name $ctname -it $imgname bash
 }
 
 function build_image_dockerfile() {
@@ -82,7 +86,7 @@ function delete_images() {
         docker rmi -f $img
     fi
 
-    echo "Do you wanna Delete the Container/Containers [y/n] " 
+    echo "Do you wanna Delete the Container/Containers [y/n] "
     read ch
     if [[ $ch == 'y' ]]; then
         delete_containers
@@ -107,7 +111,7 @@ function delete_containers() {
         docker rm -f $cname
     fi
 
-   : '
+    : '
     read -p "Do you wanna Delete the Image/Images [y/n] - " ch
     if [[ $ch == 'y' ]]; then
         delete_images
@@ -132,17 +136,26 @@ function help() {
                     2> Path - If the Docker File is not present in the current Direcotry.
         
         --run
-                It Runs a container from the Image build from Dockerfile, Takes a few input in the process :-
+                It Runs a container from the Image build from Dockerfile.
+                Takes a few input in the process :-
                     
                     1> Choice - [y/n] If we wanna build the Image First.
                     2> imageName - Asks for  the Image Name, cause ain't it ovious.
                     3> containerName - Ask for the name we wanna give to the container.
 
         --build_compose
-                It Build the Image from docker-compose.yml file, and gets inside the shell. Takes a few input in the process :-
+                It Build the Image from docker-compose.yml file
+                Takes a few input in the process :-
                     
                     1> containerName - To execute the shell in Interactive mode we need the containers name.
                     2> Path - If the Docker File is not present in the current Direcotry.
+
+        --run_compose
+                It Runs a container from the Image build from docker-compose.
+                Takes a few input in the process :-
+                    
+                    1> imageName - Asks for  the Image Name, cause ain't it ovious.
+                    2> containerName - Ask for the name we wanna give to the container.
 
         --delcon
                 It Deletes the Container/Containers, Takes a few input in the process :-
@@ -187,9 +200,14 @@ if [ "$1" == "--delimg" ]; then
     delete_images
 fi
 
-if [[ "$1" == "--delimg" && "$2" == "--build-compose" ]]; then
+: 'if [[ "$1" == "--delimg" && "$2" == "--build-compose" ]]; then
     delete_images
     build_image_dockercompose
+fi
+'
+
+if [[ "$1" == "--run_compose" ]]; then
+    run_container_docker_compose
 fi
 
 #If Not Arguments
@@ -198,5 +216,3 @@ if [ "$#" -eq $NO_ARGS ]; then
     echo "Error: Invalid no of Arguments. Try '--help' for more info!!" >&2
     help
 fi
-
-
