@@ -8,9 +8,22 @@ function build_image_dockercompose() {
         echo "--------------------------"
         echo "      Build Complete      "
         echo "--------------------------"
-        echo "Enter the container Name - " 
-        read ctname
-        docker exec -it $ctname bash
+        read -p "Do you run the container[y/n] - " ch
+        if [[ $ch == "y" ]]; then
+            echo -e "---------------------------------\n\n\n\n"
+            docker images
+            echo -e "\n\n"
+            ctname="Default_Container"
+            echo "Enter the container Name That you wanna Give, else we have a default name - " 
+            read ctname
+            echo "Enter The Image Name - "
+            read imgname
+            # docker exec -it $ctname bash
+            docker run --name $ctname -it $imgname bash
+        else
+            echo "\n\nExiting from the script..\n\n"
+            exit 1
+        fi
     else
         read -p "Enter the Path to the docker-compose.yml - " path
         cd $path
@@ -42,7 +55,7 @@ function run_container_dockerfile() {
                 build_image_dockerfile
             fi
         else
-            echo "Building the Image.."
+            echo -e "\n\nBuilding the Image..\n\n"
             sleep 2
             build_image_dockerfile
         fi
@@ -69,9 +82,13 @@ function delete_images() {
         docker rmi -f $img
     fi
 
-    read -p "Do you wanna Delete the Container/Containers [y/n]" ch
+    echo "Do you wanna Delete the Container/Containers [y/n] " 
+    read ch
     if [[ $ch == 'y' ]]; then
         delete_containers
+    else
+        echo "Exiting From the script.."
+        exit 1
     fi
 }
 
@@ -90,10 +107,15 @@ function delete_containers() {
         docker rm -f $cname
     fi
 
-    read -p "Do you wanna Delete the Image/Images [y/n]" ch
+   : '
+    read -p "Do you wanna Delete the Image/Images [y/n] - " ch
     if [[ $ch == 'y' ]]; then
         delete_images
+    else
+        echo  "Exiting From the Script"
+        exit 1
     fi
+    '
 }
 
 function help() {
@@ -163,6 +185,11 @@ fi
 
 if [ "$1" == "--delimg" ]; then
     delete_images
+fi
+
+if [[ "$1" == "--delimg" && "$2" == "--build-compose" ]]; then
+    delete_images
+    build_image_dockercompose
 fi
 
 #If Not Arguments
