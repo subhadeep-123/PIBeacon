@@ -12,7 +12,7 @@ function build_image_dockercompose() {
         if [[ $ch == "y" ]]; then
             run_container_docker_compose
         else
-            echo "\n\nExiting from the script..\n\n"
+            echo -e "\n\nExiting from the script..\n\n"
             exit 1
         fi
     else
@@ -32,7 +32,8 @@ function run_container_docker_compose() {
     echo "Enter The Image Name - "
     read imgname
     # docker exec -it $ctname bash
-    docker run --name $ctname -it $imgname bash
+    docker run --cap-add=SYS_ADMIN --cap-add=NET_ADMIN --net=host --name $ctname -it $imgname bash
+    # docker run --name $ctname -it $imgname bash
 }
 
 function build_image_dockerfile() {
