@@ -1,6 +1,23 @@
 #!/bin/bash
 
-function build_image() {
+clear
+
+function build_image_dockercompose() {
+    if [[ -f docker-compose.yml ]]; then
+        docker-compose up -d --build
+        echo "--------------------------"
+        echo "      Build Complete      "
+        echo "--------------------------"
+        read -p "Enter the container Name - " ct-name
+        docker exec -it $ct-name bash
+    else
+        read -p "Enter the Path to the docker-compose.yml - " path
+        cd $path
+        docker-compose up -d --build
+    fi
+}
+
+function build_image_dockerfile() {
     read -p "Enter the Tagname - " tag
     if [[ -f Dockerfile ]]; then
         docker build -t $tag .
@@ -11,7 +28,7 @@ function build_image() {
     fi
 }
 
-function run_container() {
+function run_container_dockerfile() {
     echo "Do You wanna Build the Image First [y/n] - "
     read ch
     if [[ $ch == 'y' ]]; then
@@ -21,14 +38,13 @@ function run_container() {
         if [[ $? == 0 ]]; then
             read -p "Image is already Present Do you still wanna built [y/n]" chh
             if [[ $chh == 'y' ]]; then
-                build_image
+                build_image_dockerfile
             fi
         else
             echo "Building the Image.."
             sleep 2
-            build_image
+            build_image_dockerfile
         fi
-
     else
         echo "Enter the Image name with tag [img:tag] - "
         read img
@@ -87,17 +103,23 @@ function help() {
         The Purpose of this commands are:-
 
         --build
-                It Build the Image, Takes a few input in the process :-
+                It Build the Image from Dockerfile, Takes a few input in the process :-
                     
                     1> tagName - For Giving a Name and a tag to the Image [imgName:tag].
                     2> Path - If the Docker File is not present in the current Direcotry.
         
         --run
-                It Runs the Image, Takes a few input in the process :-
+                It Runs a container from the Image build from Dockerfile, Takes a few input in the process :-
                     
                     1> Choice - [y/n] If we wanna build the Image First.
                     2> imageName - Asks for  the Image Name, cause ain't it ovious.
                     3> containerName - Ask for the name we wanna give to the container.
+
+        --build_compose
+                It Build the Image from docker-compose.yml file, and gets inside the shell. Takes a few input in the process :-
+                    
+                    1> containerName - To execute the shell in Interactive mode we need the containers name.
+                    2> Path - If the Docker File is not present in the current Direcotry.
 
         --delcon
                 It Deletes the Container/Containers, Takes a few input in the process :-
@@ -123,11 +145,15 @@ if [ "$1" == "--help" ]; then
 fi
 
 if [ "$1" == "--build" ]; then
-    build_image
+    build_image_dockerfile
 fi
 
 if [ "$1" == "--run" ]; then
-    run_container
+    run_container_dockerfile
+fi
+
+if [ "$1" == "--build-compose" ]; then
+    build_image_dockercompose
 fi
 
 if [ "$1" == "delcon" ]; then
