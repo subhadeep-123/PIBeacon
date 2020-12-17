@@ -1,11 +1,7 @@
 systemd-sysv
 bluez
-bluez-firmware
-git 
+dbus
 python3
-python3-pip
-libbluetooth-dev
-python-dev
-libglib2.0-dev
-libboost-python-dev
-libboost-thread-dev
+bluetooth
+rfkill
+
