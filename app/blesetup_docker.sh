@@ -1,6 +1,10 @@
 #!/bin/bash
 
 # Run this Script when in the container
+service dbus start
+bluetoothd &
+
+# /bin/bash
 
 hciconfig hci0 up
 hciconfig hcio leadv 3
