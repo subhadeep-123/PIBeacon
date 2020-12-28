@@ -18,4 +18,4 @@ RUN apt-get install -y $(cat /bootstrap/deps/apt.list | tr '\n' ' ')
 RUN apt-get clean
 
 # Setting Up Entrypoint
-ENTRYPOINT sh docker_entrypoint.sh
+ENTRYPOINT sh blesetup_docker.sh
