@@ -1,7 +1,7 @@
 FROM balenalib/rpi-raspbian
 
 # Configure
-# EXPOSE 5551
+EXPOSE 5551
 WORKDIR /app
 
 # Copy Files
