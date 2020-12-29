@@ -1,7 +1,7 @@
 FROM balenalib/rpi-raspbian
 
 # Configure
-EXPOSE 5551
+# EXPOSE 5551
 WORKDIR /app
 
 # Copy Files
@@ -18,4 +18,4 @@ RUN apt-get install -y $(cat /bootstrap/deps/apt.list | tr '\n' ' ')
 RUN apt-get clean
 
 # Setting Up Entrypoint
-ENTRYPOINT sh blesetup_docker.sh
+ENTRYPOINT sh docker_setup.sh
